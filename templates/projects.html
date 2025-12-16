@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - {{ personal_data.name }}{% endblock %}
+
+{% block head_extra %}
+<style>
+    /* Projects Page Specific Styles */
+    .projects-hero {
+        padding: 8rem 0 4rem;
+        text-align: center;
+        background: rgba(10, 10, 15, 0.5);
+    }
+
+    .projects-hero h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .projects-hero p {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .projects-list {
+        padding: 4rem 0;
+    }
+
+    .project-item {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 3rem;
+        margin-bottom: 3rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+        align-items: center;
+        transition: var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .project-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary-gradient);
+        transform: scaleY(0);
+        transition: var(--transition-base);
+    }
+
+    .project-item:hover::before {
+        transform: scaleY(1);
+    }
+
+    .project-item:hover {
+        transform: translateY(-10px);
+        border-color: rgba(102, 126, 234, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .project-content h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .project-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-gradient);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .project-description {
+        color: var(--text-muted);
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+    }
+
+    .tech-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .tech-badge {
+        padding: 0.5rem 1.25rem;
+        background: rgba(102, 126, 234, 0.15);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        border-radius: var(--radius-full);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .tech-badge::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary-color);
+    }
+
+    .tech-badge:hover {
+        background: rgba(102, 126, 234, 0.25);
+        border-color: var(--primary-color);
+        transform: translateY(-2px) scale(1.05);
+    }
+
+    .project-visual-placeholder {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+        border-radius: var(--radius-md);
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--text-muted);
+        font-style: italic;
+        min-height: 250px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .project-visual-placeholder::before {
+        content: '◇';
+        position: absolute;
+        font-size: 10rem;
+        opacity: 0.1;
+        animation: rotate360 15s linear infinite;
+    }
+
+    @keyframes rotate360 {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .visual-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .view-details-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.9rem 2rem;
+        background: var(--primary-gradient);
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: var(--radius-full);
+        transition: var(--transition-base);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .view-details-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        gap: 1rem;
+    }
+
+    .view-details-btn i {
+        transition: var(--transition-fast);
+    }
+
+    .view-details-btn:hover i {
+        transform: translateX(5px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .project-item {
+            grid-template-columns: 1fr;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .projects-hero {
+            padding: 6rem 0 3rem;
+        }
+
+        .project-content h2 {
+            font-size: 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .tech-list {
+            gap: 0.5rem;
+        }
+
+        .project-visual-placeholder {
+            min-height: 200px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Projects Hero -->
+<section class="projects-hero">
+    <div class="container">
+        <h1 data-aos="fade-down">Technical Portfolio</h1>
+        <p data-aos="fade-up" data-aos-delay="100">
+            A comprehensive showcase of my technical projects, from machine learning to full-stack development
+        </p>
+    </div>
+</section>
+
+<!-- Projects List -->
+<section class="projects-list">
+    <div class="container">
+        {% for project in projects %}
+        <article class="project-item" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+            <div class="project-content">
+                <h2>
+                    <span class="project-icon">
+                        {% if 'ML' in project.slug or 'emogram' in project.slug %}
+                        <i class="fas fa-brain"></i>
+                        {% elif 'employee' in project.slug %}
+                        <i class="fas fa-users"></i>
+                        {% elif 'hypermarket' in project.slug %}
+                        <i class="fas fa-store"></i>
+                        {% else %}
+                        <i class="fas fa-code"></i>
+                        {% endif %}
+                    </span>
+                    {{ project.title }}
+                </h2>
+
+                <p class="project-description">{{ project.short_desc }}</p>
+
+                <div class="tech-list">
+                    {% for tech in project.tech %}
+                    <span class="tech-badge">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+
+                <a href="{{ url_for('project_detail', project_slug=project.slug) }}" class="view-details-btn">
+                    <span>View Case Study</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="project-visual-placeholder">
+                <div class="visual-icon">
+                    {% if 'ML' in project.slug or 'emogram' in project.slug %}
+                    <i class="fas fa-chart-line"></i>
+                    {% elif 'employee' in project.slug %}
+                    <i class="fas fa-database"></i>
+                    {% elif 'hypermarket' in project.slug %}
+                    <i class="fas fa-shopping-cart"></i>
+                    {% else %}
+                    <i class="fas fa-laptop-code"></i>
+                    {% endif %}
+                </div>
+                <p>Project Visualization</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

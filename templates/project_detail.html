@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Case Study{% endblock %}
+
+{% block head_extra %}
+<style>
+    /* Project Detail Page Styles */
+    .detail-hero {
+        padding: 10rem 0 4rem;
+        text-align: center;
+        background: rgba(10, 10, 15, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+    }
+
+    .detail-hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        line-height: 1.2;
+    }
+
+    .detail-hero-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 2rem;
+        background: var(--primary-gradient);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        box-shadow: var(--shadow-glow);
+    }
+
+    .detail-tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .detail-tech-badge {
+        padding: 0.75rem 1.5rem;
+        background: rgba(102, 126, 234, 0.15);
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-radius: var(--radius-full);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        transition: var(--transition-base);
+    }
+
+    .detail-tech-badge:hover {
+        background: rgba(102, 126, 234, 0.25);
+        border-color: var(--primary-color);
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .detail-content {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+    }
+
+    .detail-section {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 3rem;
+        margin-bottom: 3rem;
+        transition: var(--transition-base);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: var(--transition-base);
+    }
+
+    .detail-section:hover::before {
+        transform: scaleX(1);
+    }
+
+    .detail-section:hover {
+        border-color: rgba(102, 126, 234, 0.2);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--primary-gradient);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-section h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-section h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 2rem 0 1rem;
+    }
+
+    .detail-section p {
+        color: var(--text-muted);
+        line-height: 2;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0;
+    }
+
+    .detail-section li {
+        color: var(--text-muted);
+        padding-left: 2rem;
+        margin-bottom: 1rem;
+        position: relative;
+        line-height: 1.8;
+    }
+
+    .detail-section li::before {
+        content: '▹';
+        position: absolute;
+        left: 0;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+    }
+
+    .visual-placeholder {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        border-radius: var(--radius-md);
+        border: 2px dashed rgba(102, 126, 234, 0.3);
+        padding: 4rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-style: italic;
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .visual-placeholder::before {
+        content: '⟡';
+        position: absolute;
+        font-size: 15rem;
+        opacity: 0.05;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .visual-icon-large {
+        font-size: 5rem;
+        opacity: 0.3;
+        margin-bottom: 1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: var(--radius-full);
+        transition: var(--transition-base);
+    }
+
+    .back-btn:hover {
+        border-color: var(--primary-color);
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(-5px);
+        gap: 1rem;
+    }
+
+    .github-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: var(--primary-gradient);
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: var(--radius-full);
+        transition: var(--transition-base);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .github-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .detail-hero {
+            padding: 8rem 0 3rem;
+        }
+
+        .detail-hero h1 {
+            font-size: 1.75rem;
+        }
+
+        .detail-hero-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+        }
+
+        .detail-section {
+            padding: 2rem;
+        }
+
+        .detail-content {
+            padding: 3rem 1rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .back-btn,
+        .github-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Detail Hero -->
+<section class="detail-hero">
+    <div class="container">
+        <div class="detail-hero-icon" data-aos="zoom-in">
+            {% if 'ML' in project.slug or 'emogram' in project.slug %}
+            <i class="fas fa-brain"></i>
+            {% elif 'employee' in project.slug %}
+            <i class="fas fa-users"></i>
+            {% elif 'hypermarket' in project.slug %}
+            <i class="fas fa-store"></i>
+            {% else %}
+            <i class="fas fa-code"></i>
+            {% endif %}
+        </div>
+
+        <h1 data-aos="fade-up" data-aos-delay="100">{{ project.title }}</h1>
+
+        <div class="detail-tech-stack" data-aos="fade-up" data-aos-delay="200">
+            {% for tech in project.tech %}
+            <span class="detail-tech-badge">{{ tech }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Detail Content -->
+<div class="detail-content">
+    <!-- Project Overview -->
+    <section class="detail-section" data-aos="fade-up">
+        <div class="section-icon">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <h2>Project Overview</h2>
+        <p><strong>The Challenge:</strong></p>
+        <p>{{ project.short_desc }}</p>
+
+        <h3>Solution & Implementation</h3>
+        <p>{{ project.details }}</p>
+    </section>
+
+    <!-- Key Features -->
+    <section class="detail-section" data-aos="fade-up" data-aos-delay="100">
+        <div class="section-icon">
+            <i class="fas fa-star"></i>
+        </div>
+        <h2>Key Features</h2>
+        <ul>
+            {% if 'emogram' in project.slug %}
+            <li>Advanced sentiment analysis using BERT, LSTM, and CNN deep learning models</li>
+            <li>Separate mobile and web applications for users and administrators</li>
+            <li>Real-time sentiment detection in user-generated social media content</li>
+            <li>Research-grade accuracy with findings prepared for journal publication</li>
+            {% elif 'employee' in project.slug %}
+            <li>Comprehensive employee data management system</li>
+            <li>Robust MySQL database with optimized queries</li>
+            <li>Secure PHP backend with authentication</li>
+            <li>Intuitive admin interface for CRUD operations</li>
+            {% elif 'hypermarket' in project.slug %}
+            <li>Full-stack hypermarket management solution</li>
+            <li>Interactive JavaScript-powered user interface</li>
+            <li>Inventory tracking and sales management</li>
+            <li>Integrated payment processing system</li>
+            {% else %}
+            <li>Scalable architecture designed for growth</li>
+            <li>Clean, maintainable codebase following best practices</li>
+            <li>Comprehensive testing and documentation</li>
+            <li>Optimized performance and user experience</li>
+            {% endif %}
+        </ul>
+    </section>
+
+    <!-- Technical Details -->
+    <section class="detail-section" data-aos="fade-up" data-aos-delay="200">
+        <div class="section-icon">
+            <i class="fas fa-cogs"></i>
+        </div>
+        <h2>Technical Deep Dive</h2>
+
+        <div class="visual-placeholder">
+            <div class="visual-icon-large">
+                <i class="fas fa-code"></i>
+            </div>
+            <p>Code snippets, architecture diagrams, or demo videos would be displayed here</p>
+            <p style="margin-top: 1rem; opacity: 0.7;">GitHub repository integration coming soon</p>
+        </div>
+
+        <p>This project demonstrates proficiency in:</p>
+        <ul>
+            {% for tech in project.tech %}
+            <li>{{ tech }} - Applied in real-world scenarios with production-ready code</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Results & Impact -->
+    <section class="detail-section" data-aos="fade-up" data-aos-delay="300">
+        <div class="section-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h2>Results & Impact</h2>
+        {% if 'emogram' in project.slug %}
+        <p>The sentiment analysis system achieved high accuracy rates across multiple deep learning models, with results
+            currently being prepared for academic publication. The project demonstrates the practical application of NLP
+            and machine learning in understanding social media sentiment patterns.</p>
+        {% elif 'employee' in project.slug %}
+        <p>Successfully streamlined employee management processes, reducing administrative overhead and improving data
+            accuracy. The system provides a robust foundation for HR operations with scalable database architecture.</p>
+        {% elif 'hypermarket' in project.slug %}
+        <p>Delivered a comprehensive management solution that enhances operational efficiency for hypermarket
+            operations. The interactive interface improves user experience while maintaining backend reliability and
+            data integrity.</p>
+        {% else %}
+        <p>This project successfully met all requirements and demonstrated strong technical capabilities across the full
+            development stack.</p>
+        {% endif %}
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" data-aos="fade-up" data-aos-delay="400">
+        <a href="/projects" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Projects</span>
+        </a>
+        <!-- Uncomment when you have a GitHub repo
+        <a href="#" class="github-btn" target="_blank" rel="noopener">
+            <i class="fab fa-github"></i>
+            <span>View on GitHub</span>
+        </a>
+        -->
+    </div>
+</div>
+
+{% endblock %}

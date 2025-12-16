@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Novelia Joseph{% endblock %}
+
+{% block content %}
+    <div class="projects-container">
+        <h2 data-aos="fade-down">Get in Touch</h2>
+        <p class="subtitle" data-aos="fade-down" data-aos-delay="200">I am currently seeking opportunities in Machine Learning and Cloud Development. Send me a message!</p>
+
+        <!-- The form submits to the /contact POST route -->
+        <form method="POST" action="{{ url_for('submit_contact') }}" class="contact-form" data-aos="fade-up" data-aos-delay="400">
+            
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Your professional email">
+
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" required placeholder="Project Inquiry, Job Opportunity, etc.">
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="6" required placeholder="Tell me about your project or opportunity."></textarea>
+            
+            <button type="submit" class="cta-button form-submit-btn">Send Message</button>
+        </form>
+
+    </div>
+{% endblock content %}
